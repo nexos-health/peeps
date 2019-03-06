@@ -3,7 +3,7 @@ Serializers for the Professional models
 """
 from rest_framework import serializers
 
-from medrecruitment.professionals.models import Profession, Professional
+from professionals.models import Profession, Professional
 
 
 class ProfessionSerializer(serializers.ModelSerializer):
@@ -18,7 +18,7 @@ class ProfessionSerializer(serializers.ModelSerializer):
 
 class ProfessionalSerializer(serializers.ModelSerializer):
     """
-    Serializer for Profession
+    Serializer for Professional
     """
     class Meta(object):
         """ Class config """
