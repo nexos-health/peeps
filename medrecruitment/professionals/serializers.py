@@ -23,4 +23,4 @@ class ProfessionalSerializer(serializers.ModelSerializer):
     class Meta(object):
         """ Class config """
         model = Professional
-        fields = ('title', 'name', 'description')
+        fields = ('title', 'first_name', 'last_name', 'description')
