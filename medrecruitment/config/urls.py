@@ -26,5 +26,5 @@ ROUTER.register(r'professions', ProfessionViewSet)
 
 urlpatterns = [
     path('', admin.site.urls),
-    path('api/', include(ROUTER.urls)),
+    path('api', include(ROUTER.urls)),
 ]
