@@ -4,3 +4,5 @@ psycopg2
 Pillow
 django-rest-framework
 django-cors-headers
+pymongo
+django-redis
