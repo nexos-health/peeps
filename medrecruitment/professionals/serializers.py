@@ -3,17 +3,7 @@ Serializers for the Professional models
 """
 from rest_framework import serializers
 
-from professionals.models import Profession, Professional
-
-
-class ProfessionSerializer(serializers.ModelSerializer):
-    """
-    Serializer for Profession
-    """
-    class Meta(object):
-        """ Class config """
-        model = Profession
-        fields = ('name', 'description')
+from professionals.models import Professional
 
 
 class ProfessionalSerializer(serializers.ModelSerializer):

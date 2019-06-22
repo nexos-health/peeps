@@ -18,11 +18,10 @@ from django.urls import path, include
 
 from rest_framework import routers
 
-from professionals.views import ProfessionViewSet, ProfessionalViewSet
+from professionals.views import ProfessionalViewSet
 
 ROUTER = routers.DefaultRouter()
 ROUTER.register(r'professionals', ProfessionalViewSet)
-ROUTER.register(r'professions', ProfessionViewSet)
 
 urlpatterns = [
     path('', admin.site.urls),

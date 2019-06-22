@@ -7,20 +7,14 @@ from rest_framework.authentication import BasicAuthentication
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
 
-from professionals.models import (Profession, Professional)
-from professionals.serializers import ProfessionSerializer, ProfessionalSerializer
+from professionals.models import (Professional)
+from professionals.serializers import ProfessionalSerializer
 
-from medrecruitment.config.settings import MONGO_CLIENT
+from config.settings import MONGO_CLIENT
 
 db = MONGO_CLIENT['professionalsdb']
 
 # Create your views here.
-
-
-class ProfessionViewSet(viewsets.ModelViewSet):
-    queryset = Profession.objects.all()
-    serializer_class = ProfessionSerializer
-    authentication_classes = (BasicAuthentication,)
 
 
 class ProfessionalViewSet(viewsets.ModelViewSet):
@@ -79,7 +73,6 @@ class ProfessionalViewSet(viewsets.ModelViewSet):
             "tags": ["Textbook", "Fun Times"]
         }
         return Response({"Hello": "This is the response, {}".format(deployment_uid)})
-
 
     @list_route(methods=["POST"])
     def mongo_create(self, request, *args, **kwargs):
