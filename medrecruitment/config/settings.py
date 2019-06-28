@@ -27,7 +27,7 @@ SECRET_KEY = '!gl%pc09wt%jwpi-tdawljpufm4sqerjno4n4^)*75jx8g4+hi'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost"]
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',

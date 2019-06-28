@@ -1,8 +1,10 @@
-django
 dj-database-url
-psycopg2
-Pillow
-django-rest-framework
+django
 django-cors-headers
-pymongo
 django-redis
+django-rest-framework
+gunicorn
+Pillow
+psycopg2
+psycopg2-binary
+pymongo
