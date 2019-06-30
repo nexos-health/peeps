@@ -12,6 +12,10 @@ class Area(models.Model):
 
 
 class Professional(models.Model):
+    import logging; import os;
+    logging.info(".env path: %s", os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), os.pardir, ".env"
+    ))
     """
     Base model for medical professionals
     """
