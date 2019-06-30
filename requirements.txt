@@ -1,6 +1,7 @@
 dj-database-url
 django
 django-cors-headers
+django-dotenv
 django-redis
 django-rest-framework
 gunicorn
