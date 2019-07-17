@@ -1,15 +1,8 @@
 #!/usr/bin/env python
 import os
 import sys
-import logging
-
-import dotenv
 
 if __name__ == '__main__':
-    logging.info(".env path: %s", os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), os.pardir, ".env"
-    ))
-    dotenv.read_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir, ".env"))
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
     try:
         from django.core.management import execute_from_command_line
