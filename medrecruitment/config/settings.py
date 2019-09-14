@@ -30,7 +30,7 @@ SECRET_KEY = '!gl%pc09wt%jwpi-tdawljpufm4sqerjno4n4^)*75jx8g4+hi'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", False)
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "165.22.244.222"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "165.22.244.222", "doctorsaustralia.fun"]
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
