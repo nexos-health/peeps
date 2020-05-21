@@ -12,10 +12,6 @@ class Area(models.Model):
 
 
 class Professional(models.Model):
-    import logging; import os;
-    logging.info(".env path: %s", os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), os.pardir, ".env"
-    ))
     """
     Base model for medical professionals
     """
@@ -23,18 +19,46 @@ class Professional(models.Model):
     LOOKING = "LOOKING"
     OPEN_TO_OFFERS = "OPEN TO OFFERS"
 
-    SITUATION_CHOICES = ((situation, situation)
-                         for situation in [NOT_INTERESTED, LOOKING, OPEN_TO_OFFERS])
-    title = models.CharField(max_length=20, default="")
-    description = models.CharField(max_length=1000)
+    EMPLOYMENT_STATUS = (
+        (status, status)
+        for status in [NOT_INTERESTED, LOOKING, OPEN_TO_OFFERS]
+    )
+    title = models.CharField(max_length=20, default="", null=True, blank=True)
     first_name = models.CharField(max_length=100, default="")
     last_name = models.CharField(max_length=100, default="")
-    starred_clinic = models.ManyToManyField('clinics.Clinic', blank=True)
-    image = models.ImageField(null=True)
-    last_login = models.DateTimeField(null=True)
+    description = models.TextField(null=True, blank=True)
+    fees = models.TextField(blank=True, null=True)
+    wait_times = models.TextField(blank=True, null=True)
+    bulk_billing = models.BooleanField(blank=True, null=True)
+    image = models.ImageField(null=True, blank=True)
+    last_login = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.title} {self.first_name} {self.last_name}"
+
+
+class ProfessionalFlaggedProfessional(models.Model):
+    """
+    Professionals that another professional has made notes on
+    """
+    professional = models.ForeignKey(Professional, on_delete=models.DO_NOTHING, related_name='%(class)s_professional')
+    professional_noted = models.ForeignKey(Professional, on_delete=models.DO_NOTHING, related_name='%(class)s_professional_noted')
+    notes = models.TextField()
+
+    def __str__(self):
+        return f"{self.professional}'s comments on {self.professional_noted}"
+
+
+class ProfessionalFlaggedClinic(models.Model):
+    """
+    Clinics that a professional has made notes on
+    """
+    professional = models.ForeignKey(Professional, on_delete=models.DO_NOTHING)
+    clinic = models.ForeignKey('clinics.Clinic', on_delete=models.DO_NOTHING)
+    notes = models.TextField()
+
+    def __str__(self):
+        return f"{self.professional}'s comments on {self.clinic}"
 
 
 class Rate(models.Model):
@@ -49,18 +73,32 @@ class Rate(models.Model):
 
 
 class Role(models.Model):
-    GP = "General Practitioner"
-    NURSE = "Nurse"
-
-    ROLE_CHOICES = ((role, role) for role in [GP, NURSE])
-
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     professional = models.ForeignKey(Professional, on_delete=models.DO_NOTHING)
     clinic = models.ForeignKey('clinics.Clinic', on_delete=models.DO_NOTHING)
-    rate = models.ForeignKey(Rate, models.DO_NOTHING)
-    work_type = models.CharField(max_length=20, choices=ROLE_CHOICES)
-    start_date = models.DateField()
+    healthlink_address = models.CharField(max_length=100, null=True, blank=True)
+    rate = models.ForeignKey(Rate, models.DO_NOTHING, blank=True, null=True)
+    start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
 
     def __str__(self):
-        return self.description
+        return f"{self.professional} at {self.clinic}"
+
+
+class ProfessionType(models.Model):
+
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Profession(models.Model):
+    description = models.TextField(blank=True, null=True)
+    active = models.BooleanField()
+    professional = models.ForeignKey(Professional, models.DO_NOTHING)
+    profession_type = models.ForeignKey(ProfessionType, models.DO_NOTHING)
+
+    def __str__(self):
+        return f"{self.professional}'s notes on {self.profession_type}"

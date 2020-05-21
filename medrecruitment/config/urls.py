@@ -21,9 +21,9 @@ from rest_framework import routers
 from professionals.views import ProfessionalViewSet
 
 ROUTER = routers.DefaultRouter()
-ROUTER.register(r'professionals', ProfessionalViewSet)
+ROUTER.register("professionals", ProfessionalViewSet)
 
 urlpatterns = [
-    path('', admin.site.urls),
-    path('api/', include(ROUTER.urls)),
+    path("", admin.site.urls),
+    path("api/", include(ROUTER.urls)),
 ]

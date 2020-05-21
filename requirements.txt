@@ -1,3 +1,4 @@
+beautifulsoup4==4.9.0
 dj-database-url
 django
 django-cors-headers
@@ -5,8 +6,8 @@ django-dotenv
 django-redis
 django-rest-framework
 gunicorn
+pandas==0.23.1
 Pillow
 psycopg2
 psycopg2-binary
 pymongo
-mysql-client
