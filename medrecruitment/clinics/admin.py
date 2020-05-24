@@ -12,7 +12,7 @@ class ClinicAdmin(admin.ModelAdmin):
 
 class LocationAdmin(admin.ModelAdmin):
 
-    list_display = ("street_number", "street_name", "suburb", "state", "postcode")
+    list_display = ("street_number", "street_name", "suburb", "state", "postcode", "latitude", "longitude")
     search_fields = ("street_number", "street_name", "suburb", "state", "postcode")
 
 

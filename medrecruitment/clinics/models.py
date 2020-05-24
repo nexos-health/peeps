@@ -8,6 +8,10 @@ class Location(models.Model):
     suburb = models.CharField(max_length=20)
     street_name = models.CharField(max_length=100)
     street_number = models.CharField(max_length=30)
+    premise = models.CharField(max_length=100, blank=True, null=True)
+    subpremise = models.CharField(max_length=30, blank=True, null=True)
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.street_number} {self.street_name} {self.suburb}, {self.state}, {self.country}"

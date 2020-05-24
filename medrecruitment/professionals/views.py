@@ -95,7 +95,9 @@ class ProfessionalViewSet(viewsets.ModelViewSet):
                 "postcode": clinic.location.postcode,
                 "suburb": clinic.location.suburb,
                 "streetName": clinic.location.street_name,
-                "streetNumber": clinic.location.street_number
+                "streetNumber": clinic.location.street_number,
+                "latitude": clinic.location.latitude,
+                "longitude": clinic.location.longitude,
             } for clinic in clinics
         }
 
