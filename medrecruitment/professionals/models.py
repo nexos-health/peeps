@@ -29,7 +29,7 @@ class Professional(models.Model):
     description = models.TextField(null=True, blank=True)
     fees = models.TextField(blank=True, null=True)
     wait_times = models.TextField(blank=True, null=True)
-    bulk_billing = models.BooleanField(blank=True, null=True)
+    bulk_billing = models.TextField(blank=True, null=True)
     image = models.ImageField(null=True, blank=True)
     last_login = models.DateTimeField(null=True, blank=True)
 

@@ -75,6 +75,9 @@ class ProfessionalViewSet(viewsets.ModelViewSet):
                 "firstName": professional.first_name,
                 "lastName": professional.last_name,
                 "description": professional.description,
+                "fees": professional.fees,
+                "waitTimes": professional.wait_times,
+                "bulkBilling": professional.bulk_billing,
                 "clinics": []
             } for professional in professionals
         }
