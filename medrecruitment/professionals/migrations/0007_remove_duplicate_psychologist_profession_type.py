@@ -10,17 +10,18 @@ PSYCHOLOGIST = "Psychologist"
 
 
 def forwards(apps, schema_editor):
-    ProfessionType = apps.get_model('professionals', 'ProfessionType')
-    Profession = apps.get_model('professionals', 'Profession')
-
-    singular_profession_type = ProfessionType.objects.get(name=PSYCHOLOGIST)
-    plural_profession_type = ProfessionType.objects.get(name=PSYCHOLOGISTS)
-
-    professions_with_plural = Profession.objects.filter(profession_type=plural_profession_type.id)
-
-    for profession in professions_with_plural:
-        profession.profession_type = singular_profession_type
-        profession.save()
+    pass
+    # ProfessionType = apps.get_model('professionals', 'ProfessionType')
+    # Profession = apps.get_model('professionals', 'Profession')
+    #
+    # singular_profession_type = ProfessionType.objects.get(name=PSYCHOLOGIST)
+    # plural_profession_type = ProfessionType.objects.get(name=PSYCHOLOGISTS)
+    #
+    # professions_with_plural = Profession.objects.filter(profession_type=plural_profession_type.id)
+    #
+    # for profession in professions_with_plural:
+    #     profession.profession_type = singular_profession_type
+    #     profession.save()
 
 
 def backwards(apps, schema_editor):
