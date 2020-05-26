@@ -9,61 +9,62 @@ REGION_REGEX = r"(.*)(?<=[a-z])[A-Z]+$"
 
 
 def forwards(apps, schema_editor):
-    path = "/Users/elliottlovell/Downloads"  # Set path of new directory here
-    os.chdir(path)  # changes the directory
-    Clinic = apps.get_model('clinics', 'Clinic')
-    Professional = apps.get_model('professionals', 'Professional')
-    Profession = apps.get_model('professionals', 'Profession')
-    ProfessionType = apps.get_model('professionals', 'ProfessionType')
-    Role = apps.get_model('professionals', 'Role')
-
-    missing_clinics_set = set()
-    with open('professionals_database.csv', "r+", encoding="utf-8") as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            first_name = row["First Name"].title()
-            last_name = row["Last Name"].title()
-            clinic_name = row["Organisation"]
-            areas_of_interest = row["Areas of Interest/Comments"]
-            healthlink = row["HealthLink Address"]
-            occupation = row["Occupation"]
-
-            region_regex_matches = re.match(REGION_REGEX, occupation)
-            if region_regex_matches:
-                profession_type = region_regex_matches.groups()[0]
-            else:
-                profession_type = occupation
-
-            spaced_profession_type = " ".join(re.findall('[A-Z][^A-Z]*', profession_type))
-
-            professional, _ = Professional.objects.get_or_create(
-                first_name=first_name,
-                last_name=last_name,
-                description=areas_of_interest,
-            )
-
-            profession_type, _ = ProfessionType.objects.get_or_create(
-                name=spaced_profession_type
-            )
-
-            profession, _ = Profession.objects.get_or_create(
-                active=True,
-                professional=professional,
-                profession_type=profession_type
-            )
-
-            clinic = Clinic.objects.get(name=clinic_name)
-
-            if not clinic:
-                missing_clinics_set.add(clinic_name)
-            else:
-                role, _ = Role.objects.get_or_create(
-                    professional=professional,
-                    clinic=clinic,
-                    healthlink_address=healthlink,
-                )
-            continue
-    print("MISSED CLINICS", missing_clinics_set)
+    pass
+    # path = "/Users/elliottlovell/Downloads"  # Set path of new directory here
+    # os.chdir(path)  # changes the directory
+    # Clinic = apps.get_model('clinics', 'Clinic')
+    # Professional = apps.get_model('professionals', 'Professional')
+    # Profession = apps.get_model('professionals', 'Profession')
+    # ProfessionType = apps.get_model('professionals', 'ProfessionType')
+    # Role = apps.get_model('professionals', 'Role')
+    #
+    # missing_clinics_set = set()
+    # with open('professionals_database.csv', "r+", encoding="utf-8") as csvfile:
+    #     reader = csv.DictReader(csvfile)
+    #     for row in reader:
+    #         first_name = row["First Name"].title()
+    #         last_name = row["Last Name"].title()
+    #         clinic_name = row["Organisation"]
+    #         areas_of_interest = row["Areas of Interest/Comments"]
+    #         healthlink = row["HealthLink Address"]
+    #         occupation = row["Occupation"]
+    #
+    #         region_regex_matches = re.match(REGION_REGEX, occupation)
+    #         if region_regex_matches:
+    #             profession_type = region_regex_matches.groups()[0]
+    #         else:
+    #             profession_type = occupation
+    #
+    #         spaced_profession_type = " ".join(re.findall('[A-Z][^A-Z]*', profession_type))
+    #
+    #         professional, _ = Professional.objects.get_or_create(
+    #             first_name=first_name,
+    #             last_name=last_name,
+    #             description=areas_of_interest,
+    #         )
+    #
+    #         profession_type, _ = ProfessionType.objects.get_or_create(
+    #             name=spaced_profession_type
+    #         )
+    #
+    #         profession, _ = Profession.objects.get_or_create(
+    #             active=True,
+    #             professional=professional,
+    #             profession_type=profession_type
+    #         )
+    #
+    #         clinic = Clinic.objects.get(name=clinic_name)
+    #
+    #         if not clinic:
+    #             missing_clinics_set.add(clinic_name)
+    #         else:
+    #             role, _ = Role.objects.get_or_create(
+    #                 professional=professional,
+    #                 clinic=clinic,
+    #                 healthlink_address=healthlink,
+    #             )
+    #         continue
+    # print("MISSED CLINICS", missing_clinics_set)
 
 
 def backwards(apps, schema_editor):
