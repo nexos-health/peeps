@@ -37,30 +37,6 @@ class Professional(models.Model):
         return f"{self.title} {self.first_name} {self.last_name}"
 
 
-class ProfessionalFlaggedProfessional(models.Model):
-    """
-    Professionals that another professional has made notes on
-    """
-    professional = models.ForeignKey(Professional, on_delete=models.DO_NOTHING, related_name='%(class)s_professional')
-    professional_noted = models.ForeignKey(Professional, on_delete=models.DO_NOTHING, related_name='%(class)s_professional_noted')
-    notes = models.TextField()
-
-    def __str__(self):
-        return f"{self.professional}'s comments on {self.professional_noted}"
-
-
-class ProfessionalFlaggedClinic(models.Model):
-    """
-    Clinics that a professional has made notes on
-    """
-    professional = models.ForeignKey(Professional, on_delete=models.DO_NOTHING)
-    clinic = models.ForeignKey('clinics.Clinic', on_delete=models.DO_NOTHING)
-    notes = models.TextField()
-
-    def __str__(self):
-        return f"{self.professional}'s comments on {self.clinic}"
-
-
 class Rate(models.Model):
     AUD = "AUD"
     CURRENCY_CHOICES = ((currency, currency) for currency in [AUD])
@@ -102,3 +78,15 @@ class Profession(models.Model):
 
     def __str__(self):
         return f"{self.professional}'s notes on {self.profession_type}"
+
+
+class ProfessionalGroup(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    user = models.ForeignKey("users.User", models.DO_NOTHING)
+
+
+class ProfessionalGroupMapping(models.Model):
+    group = models.ForeignKey(ProfessionalGroup, models.DO_NOTHING)
+    professional = models.ForeignKey(Professional, models.DO_NOTHING)
+
