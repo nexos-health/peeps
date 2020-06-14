@@ -8,8 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from clinics.models import Clinic, Location
-from professionals.models import (Professional, ProfessionalFlaggedProfessional, Profession, Role,
-                                  ProfessionType)
+from professionals.models import (Professional, Profession, Role, ProfessionType)
 from professionals.serializers import ProfessionalSerializer
 
 from config.settings import MONGO_CLIENT
@@ -23,44 +22,6 @@ class ProfessionalViewSet(viewsets.ModelViewSet):
     queryset = Professional.objects.all()
     serializer_class = ProfessionalSerializer
     authentication_classes = (BasicAuthentication,)
-
-    @action(detail=False, methods=["POST"])
-    def create_note(self, request, *args, **kwargs):
-        body = request.data
-        professional_id = body.get("id")
-        noted_professional_id = body.get("noted_id")
-        new_notes = body.get("notes")
-
-        if professional_id and noted_professional_id:
-            professional = Professional.objects.get(id=professional_id)
-            noted_professional = Professional.objects.get(id=noted_professional_id)
-            obj, created = ProfessionalFlaggedProfessional.objects.update_or_create(
-                professional=professional,
-                professional_noted=noted_professional,
-                defaults={"notes": new_notes}
-            )
-            notes = obj.notes
-        else:
-            created = False
-            notes = None
-
-        return Response({
-            "created": created,
-            "notes": notes
-        })
-
-    @action(detail=False, methods=["GET"])
-    def professionals_noted(self, request, *args, **kwargs):
-        params = request.query_params
-        professional_id = params.get("id")
-
-        professionals_objs = ProfessionalFlaggedProfessional.objects.filter(professional=professional_id)
-        professionals_ids = {professional.id for professional in professionals_objs}
-        professionals = Professional.objects.filter(id__in=professionals_ids)
-
-        return Response(data={
-            "professionals": professionals
-        })
 
     @action(detail=False, methods=["GET"])
     def list_professionals(self, request, *args, **kwargs):

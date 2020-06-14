@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 from professionals.models import Professional, Area, Role, Rate, Profession, ProfessionType, \
-    ProfessionalFlaggedProfessional
+    ProfessionalGroup
+
 
 # Register your models here.
 
@@ -28,9 +29,15 @@ class RoleAdmin(admin.ModelAdmin):
     search_fields = ("professional", "clinic")
 
 
+class ProfessionalGroupAdmin(admin.ModelAdmin):
+
+    list_display = ("name", "description", "user")
+    search_fields = ("name", "description", "user")
+
+
 admin.site.register(Professional, ProfessionalAdmin)
 admin.site.register(ProfessionType, ProfessionTypeAdmin)
-admin.site.register(ProfessionalFlaggedProfessional)
+admin.site.register(ProfessionalGroup, ProfessionalGroupAdmin)
 admin.site.register(Profession, ProfessionAdmin)
 admin.site.register(Area)
 admin.site.register(Role, RoleAdmin)

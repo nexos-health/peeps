@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'clinics.apps.ClinicsConfig',
     'professionals.apps.ProfessionalsConfig',
     'questions.apps.QuestionsConfig',
+    'users.apps.UsersConfig',
     'rest_framework',
     'corsheaders',
 ]
