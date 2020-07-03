@@ -82,11 +82,24 @@ class Profession(models.Model):
 
 class ProfessionalGroup(models.Model):
     name = models.CharField(max_length=100)
+    display_name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     user = models.ForeignKey("users.User", models.DO_NOTHING)
+
+    class Meta:
+        unique_together = (('user', 'name'),)
+
+    def __str__(self):
+        return f"{self.display_name} - {self.user}"
 
 
 class ProfessionalGroupMapping(models.Model):
     group = models.ForeignKey(ProfessionalGroup, models.DO_NOTHING)
     professional = models.ForeignKey(Professional, models.DO_NOTHING)
+
+    class Meta:
+        unique_together = (('professional', 'group'),)
+
+    def __str__(self):
+        return f"{self.group} - {self.professional}"
 

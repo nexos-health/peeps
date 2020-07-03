@@ -8,12 +8,15 @@ class User(models.Model):
     """
     User of the platform
     """
-    user_id = models.CharField(
+    user_key = models.CharField(
         max_length=8, unique=True, default=create_user_id, editable=False
     )
     auth_id = models.CharField(max_length=100, unique=True)
     email = models.EmailField(unique=True, null=True)
     professional = models.OneToOneField("professionals.Professional", on_delete=models.DO_NOTHING, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user_key}"
 
 
 class UserNotesProfessional(models.Model):

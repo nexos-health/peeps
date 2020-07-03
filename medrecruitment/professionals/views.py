@@ -8,10 +8,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from clinics.models import Clinic, Location
-from professionals.models import (Professional, Profession, Role, ProfessionType)
+from professionals.models import (Professional, Profession, Role, ProfessionType, ProfessionalGroup,
+                                  ProfessionalGroupMapping)
 from professionals.serializers import ProfessionalSerializer
 
 from config.settings import MONGO_CLIENT
+from professionals.utils import get_professionals
 
 db = MONGO_CLIENT['professionalsdb']
 
@@ -31,45 +33,10 @@ class ProfessionalViewSet(viewsets.ModelViewSet):
         professionals = list(Professional.objects.filter(
             profession__profession_type__in=profession_type_ids
         ))
-        professionals_dict = {
-            professional.id: {
-                "firstName": professional.first_name,
-                "lastName": professional.last_name,
-                "description": professional.description,
-                "fees": professional.fees,
-                "waitTimes": professional.wait_times,
-                "bulkBilling": professional.bulk_billing,
-                "clinics": []
-            } for professional in professionals
-        }
-        roles = list(Role.objects.filter(professional__in=professionals))
-        clinic_professional_mapping = {
-            (role.professional_id, role.clinic_id)
-            for role in roles
-        }
-        clinics = list(Clinic.objects.filter(role__professional_id__in=professionals_dict.keys())
-                       .select_related("location"))
-        clinics_dict = {
-            clinic.id: {
-                "clinicName": clinic.name,
-                "phone": clinic.phone,
-                "fax": clinic.fax,
-                "country": clinic.location.country,
-                "state": clinic.location.state,
-                "postcode": clinic.location.postcode,
-                "suburb": clinic.location.suburb,
-                "streetName": clinic.location.street_name,
-                "streetNumber": clinic.location.street_number,
-                "latitude": clinic.location.latitude,
-                "longitude": clinic.location.longitude,
-            } for clinic in clinics
-        }
-
-        for tuple_map in clinic_professional_mapping:
-            professionals_dict[tuple_map[0]]["clinics"] += [clinics_dict[tuple_map[1]]]
+        professionals_dict = get_professionals(professionals)
 
         professionals_list = [
-            {**info, **{"id": professional_id}}
+            {**{"id": professional_id}, **info}
             for professional_id, info in professionals_dict.items()
         ]
 
@@ -146,3 +113,50 @@ class ProfessionalViewSet(viewsets.ModelViewSet):
         deployment_uid = kwargs.get("deployment_uid")
         return Response({"Hello": "This is the response, {}".format(deployment_uid)})
 
+
+class ProfessionalGroupsViewSet(viewsets.ModelViewSet):
+    queryset = ProfessionalGroup.objects.all()
+    serializer_class = ProfessionalSerializer
+    authentication_classes = (BasicAuthentication,)
+
+    # @action(detail=False, methods=["GET"])
+    def list(self, request, *args, **kwargs):
+        user_key = request.query_params.get("user_key")
+
+        groups = ProfessionalGroup.objects.filter(
+            user__user_key=user_key
+        )
+
+        groups_dict = {
+            group.id: {
+                "name": group.name,
+                "displayName": group.display_name,
+                "description": group.description,
+                "professionalsIds": []
+            } for group in groups
+        }
+
+        professional_group_mappings = ProfessionalGroupMapping.objects.filter(
+            group__in=groups_dict.keys()
+        )
+
+        professional_ids = set()
+        for mapping in professional_group_mappings:
+            groups_dict[mapping.group_id]["professionalsIds"].append(mapping.professional_id)
+            professional_ids.add(mapping.professional_id)
+
+        professionals = list(Professional.objects.filter(
+            id__in=professional_ids
+        ))
+
+        professionals_dict = get_professionals(professionals)
+
+        for group_id, group in groups_dict.items():
+            group_professionals_ids = group["professionalsIds"]
+            groups_dict[group_id]["professionals"] = [
+                {**{"id": professional_id}, **info}
+                for professional_id, info in professionals_dict.items()
+                if professional_id in group_professionals_ids
+            ]
+
+        return Response(data=groups_dict)

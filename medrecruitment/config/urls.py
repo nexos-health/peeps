@@ -18,11 +18,12 @@ from django.urls import path, include
 
 from rest_framework import routers
 
-from professionals.views import ProfessionalViewSet
+from professionals.views import ProfessionalViewSet, ProfessionalGroupsViewSet
 from users.views import UserViewSet
 
 ROUTER = routers.DefaultRouter()
 ROUTER.register("professionals", ProfessionalViewSet)
+ROUTER.register("groups", ProfessionalGroupsViewSet)
 ROUTER.register("users", UserViewSet)
 
 urlpatterns = [

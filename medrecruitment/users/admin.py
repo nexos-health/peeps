@@ -7,8 +7,8 @@ from users.models import User
 
 class UserAdmin(admin.ModelAdmin):
 
-    list_display = ("user_id", "auth_id", "professional",)
-    search_fields = ("user_id", "auth_id", "professional",)
+    list_display = ("user_key", "auth_id", "professional",)
+    search_fields = ("user_key", "auth_id", "professional",)
 
 
 admin.site.register(User, UserAdmin)
