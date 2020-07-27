@@ -13,4 +13,4 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta(object):
         """ Class config """
         model = User
-        fields = ("user_id", "email", "auth_id")
+        fields = ("user_key", "email", "auth_id")

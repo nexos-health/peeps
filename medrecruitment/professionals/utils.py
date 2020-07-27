@@ -1,11 +1,11 @@
 """Utility functions for professionals"""
 from clinics.models import Clinic
-from professionals.models import Role
+from professionals.models import Role, Professional, ProfessionalGroupMapping
 
 
 def get_professionals(professionals):
     professionals_dict = {
-        professional.id: {
+        professional.uid: {
             "firstName": professional.first_name,
             "lastName": professional.last_name,
             "description": professional.description,
@@ -17,10 +17,10 @@ def get_professionals(professionals):
     }
     roles = list(Role.objects.filter(professional__in=professionals))
     clinic_professional_mapping = {
-        (role.professional_id, role.clinic_id)
+        (role.professional.uid, role.clinic.id)
         for role in roles
     }
-    clinics = list(Clinic.objects.filter(role__professional_id__in=professionals_dict.keys())
+    clinics = list(Clinic.objects.filter(role__professional__uid__in=professionals_dict.keys())
                    .select_related("location"))
     clinics_dict = {
         clinic.id: {
@@ -42,3 +42,38 @@ def get_professionals(professionals):
         professionals_dict[tuple_map[0]]["clinics"] += [clinics_dict[tuple_map[1]]]
 
     return professionals_dict
+
+
+def format_professional_groups(groups):
+    groups_dict = {
+        str(group.uid): {
+            "name": group.name,
+            "description": group.description,
+            "professionalsUids": []
+        } for group in groups
+    }
+
+    professional_group_mappings = ProfessionalGroupMapping.objects.filter(
+        group__uid__in=groups_dict.keys()
+    )
+
+    professional_uids = set()
+    for mapping in professional_group_mappings:
+        groups_dict[mapping.group.uid]["professionalsUids"].append(mapping.professional.uid)
+        professional_uids.add(mapping.professional.uid)
+
+    professionals = list(Professional.objects.filter(
+        uid__in=professional_uids
+    ))
+
+    professionals_dict = get_professionals(professionals)
+
+    for group_uid, group in groups_dict.items():
+        group_professionals_uids = group["professionalsUids"]
+        groups_dict[group_uid]["professionals"] = [
+            {**{"uid": professional_uid}, **info}
+            for professional_uid, info in professionals_dict.items()
+            if professional_uid in group_professionals_uids
+        ]
+
+    return groups_dict

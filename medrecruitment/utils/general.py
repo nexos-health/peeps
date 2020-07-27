@@ -10,7 +10,7 @@ ALLOWED_CHARSET = [
 ]
 
 
-def create_uuid():
+def create_uid():
     """
     UUID without dashes (v4)
     """

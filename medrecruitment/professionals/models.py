@@ -1,5 +1,7 @@
 from django.db import models
 
+from utils.general import create_uid
+
 
 class Area(models.Model):
     postcode = models.IntegerField(blank=True, null=True)
@@ -23,6 +25,7 @@ class Professional(models.Model):
         (status, status)
         for status in [NOT_INTERESTED, LOOKING, OPEN_TO_OFFERS]
     )
+    uid = models.CharField(max_length=32, unique=True, default=create_uid, editable=False)
     title = models.CharField(max_length=20, default="", null=True, blank=True)
     first_name = models.CharField(max_length=100, default="")
     last_name = models.CharField(max_length=100, default="")
@@ -62,7 +65,7 @@ class Role(models.Model):
 
 
 class ProfessionType(models.Model):
-
+    uid = models.CharField(max_length=32, unique=True, default=create_uid, editable=False)
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
 
@@ -71,6 +74,7 @@ class ProfessionType(models.Model):
 
 
 class Profession(models.Model):
+    uid = models.CharField(max_length=32, unique=True, default=create_uid, editable=False)
     description = models.TextField(blank=True, null=True)
     active = models.BooleanField()
     professional = models.ForeignKey(Professional, models.DO_NOTHING)
@@ -81,8 +85,8 @@ class Profession(models.Model):
 
 
 class ProfessionalGroup(models.Model):
+    uid = models.CharField(max_length=32, unique=True, default=create_uid, editable=False)
     name = models.CharField(max_length=100)
-    display_name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     user = models.ForeignKey("users.User", models.DO_NOTHING)
 
@@ -90,7 +94,7 @@ class ProfessionalGroup(models.Model):
         unique_together = (('user', 'name'),)
 
     def __str__(self):
-        return f"{self.display_name} - {self.user}"
+        return f"{self.name} - {self.user}"
 
 
 class ProfessionalGroupMapping(models.Model):

@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-from utils.general import create_user_id
+from utils.general import create_user_id, create_uid
 
 
 class User(models.Model):
@@ -23,6 +23,7 @@ class UserNotesProfessional(models.Model):
     """
     Notes that a user has made on a particular professional
     """
+    uid = models.CharField(max_length=32, unique=True, default=create_uid, editable=False)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     professional = models.ForeignKey("professionals.Professional", on_delete=models.DO_NOTHING)
     notes = models.TextField()
@@ -35,6 +36,7 @@ class UserNotesClinic(models.Model):
     """
     Notes that a user has made on a particular clinic
     """
+    uid = models.CharField(max_length=32, unique=True, default=create_uid, editable=False)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     clinic = models.ForeignKey('clinics.Clinic', on_delete=models.DO_NOTHING)
     notes = models.TextField()

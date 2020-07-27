@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='uid',
-            field=models.CharField(default=utils.general.create_uuid, editable=False, max_length=32, unique=True, verbose_name='UID'),
+            field=models.CharField(default=utils.general.create_uid, editable=False, max_length=32, unique=True, verbose_name='UID'),
         ),
     ]
