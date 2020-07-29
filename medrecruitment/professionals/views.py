@@ -151,10 +151,10 @@ class ProfessionalGroupsViewSet(viewsets.ModelViewSet):
         return Response(data=groups_dict)
 
     @action(detail=False, methods=["POST"])
-    def add_professional(self, request, *args, **kwargs):
+    def add_professionals(self, request, *args, **kwargs):
         user_key = request.data.get("user_key")
-        professional_uid = request.data.get("professional_uid")
-        group_uid = request.data.get("group_uid")
+        professional_uids = request.data.get("professionalUids")
+        group_uid = request.data.get("groupUid")
 
         try:
             group = ProfessionalGroup.objects.get(
@@ -162,26 +162,26 @@ class ProfessionalGroupsViewSet(viewsets.ModelViewSet):
                 user__user_key=user_key
             )
 
-            professional = Professional.objects.get(
-                uid=professional_uid
+            professionals = Professional.objects.filter(
+                uid=professional_uids
             )
 
-            ProfessionalGroupMapping.objects.get_or_create(
-                professional=professional,
+            ProfessionalGroupMapping.objects.create(
+                professional=professionals,
                 group=group
             )
 
         except ProfessionalGroup.DoesNotExist:
             return Response(f"Group with user_key: {user_key}, group_uid:{group_uid} was not found.", status=404)
         except Professional.DoesNotExist:
-            return Response(f"Professional with professional_uid: {professional_uid} was not found.", status=404)
+            return Response(f"Professional with professional_uids: {professional_uids} were not found.", status=404)
         except Exception as ex:
             return Response(f"{ex}")
         else:
             return Response(data={"message": "CREATED"}, status=201)
 
     @action(detail=False, methods=["DELETE"])
-    def remove_professional(self, request, *args, **kwargs):
+    def remove_professionals(self, request, *args, **kwargs):
         user_key = request.data.get("user_key")
         professional_uid = request.data.get("professional_uid")
         group_uid = request.data.get("group_uid")
