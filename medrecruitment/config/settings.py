@@ -120,8 +120,19 @@ CACHES = {
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': dj_database_url.config(default='sqlite:///{0}'.format('db.sqlite3'))
+# }
+
 DATABASES = {
-    'default': dj_database_url.config(default='sqlite:///{0}'.format('db.sqlite3'))
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dmedrecruit',
+        'USER': 'dmedrecruit_srvc',
+        'PASSWORD': '8medical8',
+        'HOST': 'db',
+        'PORT': 5432,
+    }
 }
 
 # Connecting to mongodb client
