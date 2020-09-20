@@ -18,13 +18,15 @@ from django.urls import path, include
 
 from rest_framework import routers
 
-from professionals.views import ProfessionViewSet, ProfessionalViewSet
+from professionals.views import ProfessionalViewSet, ProfessionalGroupsViewSet
+from users.views import UserViewSet
 
 ROUTER = routers.DefaultRouter()
-ROUTER.register(r'professionals', ProfessionalViewSet)
-ROUTER.register(r'professions', ProfessionViewSet)
+ROUTER.register("professionals", ProfessionalViewSet)
+ROUTER.register("groups", ProfessionalGroupsViewSet)
+ROUTER.register("users", UserViewSet)
 
 urlpatterns = [
-    path('', admin.site.urls),
-    path('api/', include(ROUTER.urls)),
+    path("", admin.site.urls),
+    path("api/", include(ROUTER.urls)),
 ]

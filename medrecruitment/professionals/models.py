@@ -1,6 +1,6 @@
 from django.db import models
 
-# Create your models here.
+from utils.general import create_uid
 
 
 class Area(models.Model):
@@ -13,17 +13,6 @@ class Area(models.Model):
         return f"{self.city}, {self.state}, {self.country}"
 
 
-class Profession(models.Model):
-    """
-    Types of professions, e.g. General Practitioner, Nurse, etc.
-    """
-    name = models.CharField(max_length=255, unique=True)
-    description = models.TextField()
-
-    def __str__(self):
-        return self.name
-
-
 class Professional(models.Model):
     """
     Base model for medical professionals
@@ -32,22 +21,89 @@ class Professional(models.Model):
     LOOKING = "LOOKING"
     OPEN_TO_OFFERS = "OPEN TO OFFERS"
 
-    SITUATION_CHOICES = ((situation, situation)
-                         for situation in [NOT_INTERESTED, LOOKING, OPEN_TO_OFFERS])
-    title = models.CharField(max_length=20, default="")
+    EMPLOYMENT_STATUS = (
+        (status, status)
+        for status in [NOT_INTERESTED, LOOKING, OPEN_TO_OFFERS]
+    )
+    uid = models.CharField(max_length=32, unique=True, default=create_uid, editable=False)
+    title = models.CharField(max_length=20, default="", null=True, blank=True)
     first_name = models.CharField(max_length=100, default="")
     last_name = models.CharField(max_length=100, default="")
-    description = models.CharField(max_length=1000)
-    profession = models.ForeignKey(Profession, on_delete=models.DO_NOTHING)
-    current_organisation = models.ForeignKey('clinics.Organisation', on_delete=models.DO_NOTHING,
-                                             blank=True, null=True)
-    current_clinic = models.ForeignKey('clinics.Clinic', on_delete=models.DO_NOTHING,
-                                       related_name='employees', blank=True, null=True)
-    starred_clinic = models.ManyToManyField('clinics.Clinic', related_name="professional_starred",
-                                            blank=True)
-    current_location = models.ForeignKey(Area, on_delete=models.DO_NOTHING)
-    previous_roles = models.ForeignKey('clinics.Role', on_delete=models.CASCADE, blank=True,
-                                       null=True)
+    description = models.TextField(null=True, blank=True)
+    fees = models.TextField(blank=True, null=True)
+    wait_times = models.TextField(blank=True, null=True)
+    bulk_billing = models.TextField(blank=True, null=True)
+    image = models.ImageField(null=True, blank=True)
+    last_login = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.title} {self.first_name} {self.last_name}"
+
+
+class Rate(models.Model):
+    AUD = "AUD"
+    CURRENCY_CHOICES = ((currency, currency) for currency in [AUD])
+
+    hourly_pay_max = models.IntegerField(null=True)
+    hourly_pay_min = models.IntegerField(null=True)
+    annual_pay_max = models.IntegerField(null=True)
+    annual_pay_min = models.IntegerField(null=True)
+    currency = models.CharField(max_length=5, choices=CURRENCY_CHOICES)
+
+
+class Role(models.Model):
+    description = models.TextField(blank=True, null=True)
+    professional = models.ForeignKey(Professional, on_delete=models.DO_NOTHING)
+    clinic = models.ForeignKey('clinics.Clinic', on_delete=models.DO_NOTHING)
+    healthlink_address = models.CharField(max_length=100, null=True, blank=True)
+    rate = models.ForeignKey(Rate, models.DO_NOTHING, blank=True, null=True)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.professional} at {self.clinic}"
+
+
+class ProfessionType(models.Model):
+    uid = models.CharField(max_length=32, unique=True, default=create_uid, editable=False)
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Profession(models.Model):
+    uid = models.CharField(max_length=32, unique=True, default=create_uid, editable=False)
+    description = models.TextField(blank=True, null=True)
+    active = models.BooleanField()
+    professional = models.ForeignKey(Professional, models.DO_NOTHING)
+    profession_type = models.ForeignKey(ProfessionType, models.DO_NOTHING)
+
+    def __str__(self):
+        return f"{self.professional}'s notes on {self.profession_type}"
+
+
+class ProfessionalGroup(models.Model):
+    uid = models.CharField(max_length=32, unique=True, default=create_uid, editable=False)
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    user = models.ForeignKey("users.User", models.DO_NOTHING)
+
+    class Meta:
+        unique_together = (('user', 'name'),)
+
+    def __str__(self):
+        return f"{self.name} - {self.user}"
+
+
+class ProfessionalGroupMapping(models.Model):
+    group = models.ForeignKey(ProfessionalGroup, models.DO_NOTHING)
+    professional = models.ForeignKey(Professional, models.DO_NOTHING)
+
+    class Meta:
+        unique_together = (('professional', 'group'),)
+
+    def __str__(self):
+        return f"{self.group} - {self.professional}"
+

@@ -11,11 +11,14 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+
+import dotenv
 import dj_database_url
 from pymongo import MongoClient
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+dotenv.read_dotenv(os.path.join(BASE_DIR, os.pardir, ".env"))
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,9 +28,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '!gl%pc09wt%jwpi-tdawljpufm4sqerjno4n4^)*75jx8g4+hi'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "165.22.244.222", "doctorsaustralia.fun"]
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -45,6 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'clinics.apps.ClinicsConfig',
     'professionals.apps.ProfessionalsConfig',
+    'questions.apps.QuestionsConfig',
+    'users.apps.UsersConfig',
     'rest_framework',
     'corsheaders',
 ]
@@ -92,11 +97,42 @@ CACHES = {
     }
 }
 
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#         },
+#         'logfile': {
+#             'level': 'DEBUG',
+#             'class': 'logging.FileHandler',
+#             'filename': BASE_DIR + "/../logfile",
+#         },
+#     },
+#     'root': {
+#         'level': 'INFO',
+#         'handlers': ['console', 'logfile']
+#     },
+# }
+
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': dj_database_url.config(default='sqlite:///{0}'.format('db.sqlite3'))
+# }
+
 DATABASES = {
-    'default': dj_database_url.config(default='sqlite:///{0}'.format('db.sqlite3'))
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dmedrecruit',
+        'USER': 'dmedrecruit_srvc',
+        'PASSWORD': '8medical8',
+        'HOST': 'db',
+        'PORT': 5432,
+    }
 }
 
 # DATABASES = {
@@ -151,12 +187,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 
 
-# CORS_ORIGIN_WHITELIST = (
-#     'localhost',
-# )
+# CORS_ORIGIN_WHITELIST = [
+#     "doctorsaustralia.fun",
+# ]
