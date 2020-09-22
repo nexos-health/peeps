@@ -150,6 +150,37 @@ class ProfessionalGroupsViewSet(viewsets.ModelViewSet):
 
         return Response(data=groups_dict)
 
+    @action(detail=False, methods=["PUT"])
+    def edit_group(self, request, *args, **kwargs):
+        user_key = request.data.get("user_key")
+        group_name = request.data.get("name")
+        group_description = request.data.get("description")
+        group_uid = request.data.get("group")
+
+        try:
+            group = ProfessionalGroup.objects.get(
+                uid=group_uid,
+                user__user_key=user_key
+            )
+
+            if group_name and group.name != group_name:
+                group.name = group_name
+            if group_description and group.description != group_description:
+                group.description = group_description
+
+            group.save()
+        except ProfessionalGroup.DoesNotExist:
+            return Response(f"Group with user_key: {user_key}, group_uid:{group_uid} was not found.", status=404)
+        except Exception as ex:
+            return Response(f"{ex}"), 500
+        else:
+            group_dict = {
+                "uid": group.uid,
+                "name": group.name,
+                "description": group.description
+            }
+            return Response(data=group_dict, status=200)
+
     @action(detail=False, methods=["POST"])
     def add_professionals(self, request, *args, **kwargs):
         user_key = request.data.get("user_key")

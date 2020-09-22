@@ -7,28 +7,28 @@ import uuid
 def create_professional_uuid(apps, schema_editor):
     Professional = apps.get_model("professionals", "Professional")
     for professional in Professional.objects.all():
-        professional.uid = uuid.uuid4().replace("-", "")
+        professional.uid = str(uuid.uuid4()).replace("-", "")
         professional.save()
 
 
 def create_profession_uuid(apps, schema_editor):
     Profession = apps.get_model("professionals", "Profession")
     for profession in Profession.objects.all():
-        profession.uid = uuid.uuid4().replace("-", "")
+        profession.uid = str(uuid.uuid4()).replace("-", "")
         profession.save()
 
 
 def create_professional_group_uuid(apps, schema_editor):
     ProfessionalGroup = apps.get_model("professionals", "ProfessionalGroup")
     for group in ProfessionalGroup.objects.all():
-        group.uid = uuid.uuid4().replace("-", "")
+        group.uid = str(uuid.uuid4()).replace("-", "")
         group.save()
 
 
 def create_profession_type_uuid(apps, schema_editor):
     ProfessionType = apps.get_model("professionals", "ProfessionType")
     for profession_type in ProfessionType.objects.all():
-        profession_type.uid = uuid.uuid4().replace("-", "")
+        profession_type.uid = str(uuid.uuid4()).replace("-", "")
         profession_type.save()
 
 
