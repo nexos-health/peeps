@@ -3,11 +3,56 @@ from clinics.models import Clinic
 from professionals.models import Role, Professional, ProfessionalGroupMapping
 
 
+def get_professionals_from_professions(professions):
+    professionals_dict = {
+        profession.professional.uid: {
+            "firstName": profession.professional.first_name,
+            "lastName": profession.professional.last_name,
+            "professionType": profession.profession_type.name,
+            "description": profession.professional.description,
+            "fees": profession.professional.fees,
+            "waitTimes": profession.professional.wait_times,
+            "bulkBilling": profession.professional.bulk_billing,
+            "clinics": []
+        } for profession in professions
+    }
+
+    roles = list(Role.objects.filter(professional__uid__in=professionals_dict))
+
+    clinic_professional_mapping = {
+        (role.professional.uid, role.clinic.id)
+        for role in roles
+    }
+    clinics = list(Clinic.objects.filter(role__professional__uid__in=professionals_dict.keys())
+                   .select_related("location"))
+    clinics_dict = {
+        clinic.id: {
+            "clinicName": clinic.name,
+            "phone": clinic.phone,
+            "fax": clinic.fax,
+            "country": clinic.location.country,
+            "state": clinic.location.state,
+            "postcode": clinic.location.postcode,
+            "suburb": clinic.location.suburb,
+            "streetName": clinic.location.street_name,
+            "streetNumber": clinic.location.street_number,
+            "latitude": clinic.location.latitude,
+            "longitude": clinic.location.longitude,
+        } for clinic in clinics
+    }
+
+    for tuple_map in clinic_professional_mapping:
+        professionals_dict[tuple_map[0]]["clinics"] += [clinics_dict[tuple_map[1]]]
+
+    return professionals_dict
+
+
 def get_professionals(professionals):
     professionals_dict = {
         professional.uid: {
             "firstName": professional.first_name,
             "lastName": professional.last_name,
+            # "profession_type": professional.profession_set.,
             "description": professional.description,
             "fees": professional.fees,
             "waitTimes": professional.wait_times,
