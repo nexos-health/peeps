@@ -30,6 +30,7 @@ def get_professionals_from_professions(professions):
             "clinicName": clinic.name,
             "phone": clinic.phone,
             "fax": clinic.fax,
+            "website": clinic.website,
             "country": clinic.location.country,
             "state": clinic.location.state,
             "postcode": clinic.location.postcode,
