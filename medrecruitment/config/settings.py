@@ -195,5 +195,5 @@ CORS_ALLOW_CREDENTIALS = True
 
 
 CORS_ORIGIN_WHITELIST = [
-    "nexoshealth.com.au",
+    "https://nexoshealth.com.au",
 ]
