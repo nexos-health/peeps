@@ -16,7 +16,7 @@ from professionals.serializers import ProfessionalSerializer, ProfessionalGroupS
 from config.settings import MONGO_CLIENT
 from professionals.utils import get_professionals, format_professional_groups, \
     get_professionals_from_professions
-from users.models import User
+from users.models import User, UserNotesProfessional
 
 db = MONGO_CLIENT['professionalsdb']
 
@@ -30,21 +30,18 @@ class ProfessionalViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["GET"])
     def list_professionals(self, request, *args, **kwargs):
+        user_key = request.query_params.get("user_key")
         profession_types = request.query_params.get("professionTypes")
         profession_type_uids = profession_types.split(",") if profession_types else []
 
         # professionals = list(Professional.objects.filter(
         #     profession__profession_type__uid__in=profession_type_uids
         # ))
+        notes = UserNotesProfessional.objects.filter(user__user_key=user_key)
         professions = list(Profession.objects.filter(profession_type__uid__in=profession_type_uids))
-        professionals_dict = get_professionals_from_professions(professions)
+        professionals_dict = get_professionals_from_professions(professions, notes)
 
-        professionals_list = [
-            {**{"uid": professional_uid}, **info}
-            for professional_uid, info in professionals_dict.items()
-        ]
-
-        return Response(data=professionals_list)
+        return Response(data=professionals_dict)
 
     @action(detail=False, methods=["GET"])
     def list_profession_types(self, request, *args, **kwargs):

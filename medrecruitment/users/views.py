@@ -24,34 +24,43 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["POST"])
     def create_note(self, request, *args, **kwargs):
         body = request.data
-        professional_uid = body.get("professionalUid")
-        user_uid = body.get("userUid")
+        professional_uid = body.get("professional")
+        user_key = body.get("user_key")
         new_notes = body.get("notes")
+        if new_notes is None:
+            return Response({
+                "created": None,
+                "professionalUid": None,
+                "notes": None
+            })
 
-        if user_uid and professional_uid:
-            user = User.objects.get(id=user_uid)
-            professional = Professional.objects.get(id=professional_uid)
+        if user_key and professional_uid:
+            user = User.objects.get(user_key=user_key)
+            professional = Professional.objects.get(uid=professional_uid)
             obj, created = UserNotesProfessional.objects.update_or_create(
                 user=user,
                 professional=professional,
                 defaults={"notes": new_notes}
             )
+
             notes = obj.notes
         else:
             created = False
             notes = None
+            professional_uid = None
 
         return Response({
             "created": created,
+            "professionalUid": professional_uid,
             "notes": notes
         })
 
     @action(detail=False, methods=["GET"])
     def users_notes(self, request, *args, **kwargs):
-        params = request.query_params
-        user_uid = params.get("uid")
+        body = request.body
+        user_key = body.get("user_key")
 
-        notes_objs = UserNotesProfessional.objects.filter(user=user_uid)
+        notes_objs = UserNotesProfessional.objects.filter(user__key=user_key)
         professionals_uids = {professional.uid for professional in notes_objs}
         professionals = Professional.objects.filter(uid__in=professionals_uids)
 
