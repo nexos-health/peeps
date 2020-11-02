@@ -142,6 +142,26 @@ class ProfessionalGroupsViewSet(viewsets.ModelViewSet):
         groups_dict = format_professional_groups(groups)
         return Response(data=groups_dict, status=201)
 
+    @action(detail=False, methods=["POST"])
+    def create_favourites_group(self, request, *args, **kwargs):
+        user_key = request.data.get("user_key")
+        name = "Favourites"
+        description = "A group of your favourite health professionals"
+
+        try:
+            user = User.objects.get(user_key=user_key)
+            ProfessionalGroup.objects.create(
+                name=name,
+                description=description,
+                user=user
+            )
+        except IntegrityError:
+            return Response(f"There is already a group with the name: {name}", status=409)
+        except Exception as ex:
+            return Response(f"Uncaught Error: {ex}", 500)
+
+        return Response(data={"message": "Favourites group successfully created"}, status=201)
+
     def list(self, request, *args, **kwargs):
         user_key = request.query_params.get("user_key")
         groups = ProfessionalGroup.objects.filter(user__user_key=user_key)
