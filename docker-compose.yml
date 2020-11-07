@@ -1,27 +1,30 @@
-version: '3'
+version: '3.8'
 
 services:
   db:
-    image: postgres
-    environment:
-      - DJANGO_SETTINGS_MODULE=config.settings
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-#      - DATABASE_URL=postgres://dmedrecruit_srvc:8medical8@localhost:5432/dmedrecruit
+    image: postgres:9.6
+    container_name: peeps-db
+    env_file:
+      - .local.env
+    ports:
+      - 5432:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data/
 
   web:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/src
+    container_name: peeps-web
+    env_file:
+      - .local.env
     ports:
-      - "8000:8000"
+      - 8000:8000
+    volumes:
+      - peeps_src:/src
     depends_on:
       - db
 
 
 volumes:
   postgres_data:
+  peeps_src:
