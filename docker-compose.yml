@@ -20,11 +20,10 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - peeps_src:/src
+      - ./medrecruitment:/src
     depends_on:
       - db
 
 
 volumes:
   postgres_data:
-  peeps_src:

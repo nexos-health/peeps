@@ -13,7 +13,7 @@ COPY requirements.txt /src/
 RUN pip install -r requirements.txt
 
 # Copy files to image
-COPY medrecruitment/ /src/
+COPY ./medrecruitment /src/
 
 # Commands to run on startup of container
 #CMD ["python", "medrecruitment/manage.py", "runserver", "0.0.0.0:8000"]
