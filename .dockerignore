@@ -1,0 +1,29 @@
+# hidden files & miscellaneous
+.gitignore
+.git
+*.idea
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+.pytest_cache
+
+# Docker
+docker-compose.*
+Dockerfile*
+
+# Virtual env
+env/
+venv/
+
+# .env files
+*.env
+.env*
+
+# sql dumps
+*.sql
+
+# Other
+db.sqlite3
+README.md
+

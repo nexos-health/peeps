@@ -3,18 +3,14 @@ version: '3'
 services:
   db:
     image: postgres
-    environment:
-      - DJANGO_SETTINGS_MODULE=config.settings
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-#      - DATABASE_URL=postgres://dmedrecruit_srvc:8medical8@localhost:5432/dmedrecruit
+    env_file: .local.env
     volumes:
       - postgres_data:/var/lib/postgresql/data/
 
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python medrecruitment/manage.py runserver 0.0.0.0:8000
+    env_file: .local.env
     volumes:
       - .:/src
     ports:
