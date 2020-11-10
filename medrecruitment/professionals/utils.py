@@ -1,11 +1,21 @@
 """Utility functions for professionals"""
 from clinics.models import Clinic
 from professionals.models import Role, Professional, ProfessionalGroupMapping
+from users.serializers import UserNotesProfessionalSerializer
 
 
-def get_professionals_from_professions(professions):
+def get_user_notes(notes, professional_uid):
+    note = None
+    note_queryset = notes.filter(professional__uid=professional_uid)
+    if len(note_queryset) == 1:
+        note = list(note_queryset)[0].notes
+    return note
+
+
+def get_professionals_from_professions(professions, notes):
     professionals_dict = {
         profession.professional.uid: {
+            "uid": profession.professional.uid,
             "firstName": profession.professional.first_name,
             "lastName": profession.professional.last_name,
             "professionType": profession.profession_type.name,
@@ -13,6 +23,7 @@ def get_professionals_from_professions(professions):
             "fees": profession.professional.fees,
             "waitTimes": profession.professional.wait_times,
             "bulkBilling": profession.professional.bulk_billing,
+            "userNotes": get_user_notes(notes, profession.professional.uid),
             "clinics": []
         } for profession in professions
     }
@@ -30,6 +41,7 @@ def get_professionals_from_professions(professions):
             "clinicName": clinic.name,
             "phone": clinic.phone,
             "fax": clinic.fax,
+            "website": clinic.website,
             "country": clinic.location.country,
             "state": clinic.location.state,
             "postcode": clinic.location.postcode,

@@ -1,7 +1,9 @@
 from django.db import models
+from tinymce.models import HTMLField
+
+from utils.general import create_user_id, create_uid
 
 # Create your models here.
-from utils.general import create_user_id, create_uid
 
 
 class User(models.Model):
