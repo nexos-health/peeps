@@ -2,10 +2,12 @@ version: '3'
 
 services:
   db:
-    image: postgres
+    image: postgres:9.6
     env_file: .local.env
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
 
   web:
     build: .

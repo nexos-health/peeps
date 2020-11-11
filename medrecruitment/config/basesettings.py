@@ -12,13 +12,13 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
-import dotenv
+from dotenv import load_dotenv, find_dotenv
 import dj_database_url
 from pymongo import MongoClient
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-dotenv.read_dotenv(os.path.join(BASE_DIR, os.pardir, ".env"))
+load_dotenv(find_dotenv())
 
 
 # Quick-start development settings - unsuitable for production

@@ -7,7 +7,6 @@ except ImportError:
     pass
 
 # Pulling dotenv settings file, stored in Secret Manager
-import dotenv
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,10 +28,10 @@ if not os.path.isfile('.env'):
         with open(env_file, "w") as f:
             f.write(payload)
 
-dotenv.read_dotenv(env_file)
+load_dotenv(find_dotenv())
 
 # Setting this value from dotenv
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", SECRET_KEY)
 
 # Could be more explicitly set (see "Improvements")
 ALLOWED_HOSTS = ["*"]
@@ -46,8 +45,8 @@ DATABASES = {
 }
 
 INSTALLED_APPS += ["storages"] # for django-storages
-if "myproject" not in INSTALLED_APPS:
-    INSTALLED_APPS += ["myproject"] # for custom data migration
+# if "dev-nexos" not in INSTALLED_APPS:
+#     INSTALLED_APPS += ["dev-nexos"] # for custom data migration
 
 # Define static storage via django-storages[google]
 GS_BUCKET_NAME = os.environ.get("GS_BUCKET_NAME")

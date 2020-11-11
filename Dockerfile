@@ -15,7 +15,7 @@ WORKDIR /src
 
 # Install dependencies.
 COPY requirements.txt /src/
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 
 # Copy local code to the container image.
 COPY . /src/
