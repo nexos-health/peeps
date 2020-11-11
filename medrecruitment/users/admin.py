@@ -14,8 +14,8 @@ class UserAdmin(admin.ModelAdmin):
 
 class UserNotesProfessionalAdmin(admin.ModelAdmin):
 
-    list_display = ("user", "professional", "notes")
-    search_fields = ("user", "professional", "notes")
+    list_display = ("user", "professional", "notes",)
+    search_fields = ("user", "professional", "notes",)
 
 
 admin.site.register(User, UserAdmin)

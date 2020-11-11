@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # hidden files & miscellaneous
 .gitignore
 .git
@@ -7,6 +8,13 @@
 *.pyd
 __pycache__
 .pytest_cache
+=======
+# hidden files
+.gitignore
+.git
+*.pyc
+*.idea
+>>>>>>> feature/docker
 
 # Docker
 docker-compose.*
@@ -20,6 +28,7 @@ venv/
 *.env
 .env*
 
+<<<<<<< HEAD
 # sql dumps
 *.sql
 
@@ -27,3 +36,7 @@ venv/
 db.sqlite3
 README.md
 
+=======
+# Other
+db.sqlite3
+>>>>>>> feature/docker
