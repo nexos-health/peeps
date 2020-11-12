@@ -18,14 +18,44 @@ from pymongo import MongoClient
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-load_dotenv(find_dotenv())
+
+GOOGLE_PROJECT_NAME = os.getenv("GOOGLE_PROJECT_NAME")
+GOOGLE_SECRETS_NAME = os.getenv("GOOGLE_SECRETS_NAME")
+GOOGLE_SECRETS_VERSION = os.getenv("GOOGLE_SECRETS_VERSION")
+
+# This is used if you want to inject environment variables using a .env file. Usually this
+# shouldn't be required as env vars specified in a .env file are automatically included through
+# docker-compose. Set this value to .env, .local.env, etc.
+ENV_FILE = os.getenv("ENV_FILE")
+LOCAL = os.getenv("LOCAL")
+
+# If there isn't any ENV_FILE and we aren't running it locally (i.e with docker-compose environment
+# variables) we assume we are wanting to use Google Secrets Manager
+if LOCAL:
+    pass
+elif ENV_FILE:
+    load_dotenv(find_dotenv())
+else:
+    from google.cloud import secretmanager
+
+    client = secretmanager.SecretManagerServiceClient()
+    path = client.secret_version_path(
+        GOOGLE_PROJECT_NAME, GOOGLE_SECRETS_NAME, GOOGLE_SECRETS_VERSION
+    )
+    payload = client.access_secret_version(path).payload.data.decode("UTF-8")
+
+    for line in iter(payload.splitlines()):
+        line_values = line.split("=", 1)
+        key = line_values[0]
+        value = line_values[1]
+        os.environ[key] = value
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '!gl%pc09wt%jwpi-tdawljpufm4sqerjno4n4^)*75jx8g4+hi'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", False)
