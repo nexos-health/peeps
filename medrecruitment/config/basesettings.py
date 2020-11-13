@@ -12,8 +12,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
+import environ
 from dotenv import load_dotenv, find_dotenv
-import dj_database_url
 from pymongo import MongoClient
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -50,6 +50,8 @@ else:
         value = line_values[1]
         os.environ[key] = value
 
+# Setting up django-environ
+env = environ.Env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
@@ -151,8 +153,9 @@ CACHES = {
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default='sqlite:///{0}'.format('db.sqlite3'))
+    'default': env.db()
 }
+
 
 # DATABASES = {
 #     'default': {
