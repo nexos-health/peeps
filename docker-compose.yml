@@ -20,7 +20,7 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - ./medrecruitment:/src
+      - ./src:/src
       - ${GOOGLE_APPLICATION_CREDENTIALS_ON_MACHINE}:${GOOGLE_APPLICATION_CREDENTIALS}:ro
     depends_on:
       - db
